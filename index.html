@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RPS Multiplayer</title>
+	  <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	
+	  <!-- Javascript -->
+    <script src="assets/javascript/app.js"></script>
+    
+    <!-- CSS Reset -->
+    <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+    
+    
+    <!-- Bootstrap CDN-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <!-- CSS -->
+    <link type="text/css" rel="stylesheet" href="assets/css/style.css"/>
+
+    <!-- Firebase Reference -->
+    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+</head>
+<body>
+
+	<div class="row">
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title player">Player Name</h3>
+        </div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group player-input">
+              <label for="player-name">Your Name</label>
+              <input class="form-control" id="player-name" type="text">
+              </div>
+            <button class="btn btn-primary" id="submit-player" type="submit">Submit</button>
+          </form>
+          <div class="results"></div>
+        </div>
+      </div>
+    </div>  
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="panel panel-default selection">
+        <div class="panel-heading">
+          <h3 class="panel-title">Selection</h3>
+        </div>
+        <div class="panel-body selection-buttons">
+          <button type="button" class="btn btn-default" id="rps-selection" value="rock">Rock</button>
+          <button type="button" class="btn btn-default" id="rps-selection" value="paper">Paper</button>
+          <button type="button" class="btn btn-default" id="rps-selection" value="scissors">Scissors</button>
+        </div>
+        <div class="panel-body selection-made">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Chat area -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default chat">
+        <div class="panel-heading">
+          <h3 class="panel-title">Chat</h3>
+        </div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <label for="comment">Comment:</label>
+                <textarea class="form-control" rows="5" id="comment"></textarea>
+            </div>
+           </form>
+           <form> 
+            <div class="form-group">
+              <label for="message">Message</label>
+              <input class="form-control" id="message" type="text">
+              </div>
+            <button class="btn btn-primary" id="submit-message" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
