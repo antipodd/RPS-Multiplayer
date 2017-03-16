@@ -1,3 +1,5 @@
+//if player leaves in middle of game then may need to refresh other player's browser
+
 $(document).ready(function() {
 	//initialize firebase
 
@@ -33,6 +35,7 @@ $(document).ready(function() {
     var player2Choice;
     var turn;
     var name;
+    var playerNumber; //use this var to keep track of the player state
 
     //if two players already playing, need to prevent third player being added to database
     //if at least one player isn't already present then need to delete all chat data from the database
@@ -55,6 +58,15 @@ $(document).ready(function() {
         }
     });
 
+    numPlayers.on("child_added", function(snapshot) {
+      console.log(snapshot.key);
+      var playerAdded = snapshot.key;
+      if (playerAdded === "Player_2") {
+        $(".selection-buttons").css("display", "initial");
+        $(".selection-made").html("");
+      }
+    })
+
     $("#submit-player").on("click", function(event) {
   		// Prevent form from submitting
   		event.preventDefault();
@@ -63,8 +75,10 @@ $(document).ready(function() {
       
 
       if (!player1Exists) {
+        playerNumber = "Player 1";
+        console.log(playerNumber);
     	name = $("#player-name").val().trim();
-    	newPlayer = numPlayers.child("Player_1");
+    	newPlayer = numPlayers.child("Player_1"); 
     	newPlayer.onDisconnect().remove();
     	newPlayer.set({
        		playerName: name,
@@ -77,13 +91,19 @@ $(document).ready(function() {
       $(".player-input").remove();
       $("#submit-player").remove();
       $(".selection").css("display", "initial");
+      if (!player2Exists) {
+        $(".selection-buttons").css("display", "none");
+        $(".selection-made").text("Waiting for Player 2 to join the game");
+      } 
+      //$(".selection").css("display", "initial");
       $(".results").html("<p> Wins: " + player1Wins + "</p>" + "<p> Losses: " + player1Losses + "</p>" + "<p> Ties: " + player1Ties + "</p>");
       //$(".selection-buttons").css("display", "none");
       //$(".selection-made").text("Waiting for Player 2 selection") //need within if/else since player 2 might exist from previous round
       $(".player").html("<h3>" + name + "</h3>");
       } else {
+        playerNumber = "Player 2";
         name = $("#player-name").val().trim();
-        newPlayer = numPlayers.child("Player_2");
+        newPlayer = numPlayers.child("Player_2"); //use this var to keep track of the player state
         newPlayer.onDisconnect().remove();
         newPlayer.set({
           playerName: name,
@@ -152,6 +172,7 @@ $(document).ready(function() {
 
     
     //when player disconnects display disconnect message in chat area
+    //need to add feature here that restarts the game for the existing player without removing their data
     numPlayers.on("child_removed", function(snapshot) {
       //debugger;
       var playerDisconnect = snapshot.val().playerName; 
@@ -169,27 +190,30 @@ $(document).ready(function() {
       $(".selection-buttons").css("display", "initial");
       $(".selection-made").html(""); //removes waiting for player 1 selection
     });
-
-     player1Data.on("value", function(snapshot) {
-      if (player1Exists) {
+     //if (newPlayer === numPlayers.child("Player_1")) {
+      player1Data.on("value", function(snapshot) {
+      if (playerNumber === "Player 1") {
         //debugger;
+        console.log("newplayer is player 2")
         player1Wins = snapshot.val().wins;
         player1Losses = snapshot.val().losses;
         player1Ties = snapshot.val().ties;
         player1Choice = snapshot.val().choice;
         $(".results").html("<p> Wins: " + player1Wins + "</p>" + "<p> Losses: " + player1Losses + "</p>" + "<p> Ties: " + player1Ties + "</p>");
-      }
+      };
      });
 
+     //if (newPlayer === numPlayers.child("Player_2")) {
      player2Data.on("value", function(snapshot) {
-      if (player2Exists) {
+      if (playerNumber === "Player 2") {
         //debugger;
+        console.log("newplayer is player 2")
         player2Wins = snapshot.val().wins;
         player2Losses = snapshot.val().losses;
         player2Ties = snapshot.val().ties;
         player2Choice = snapshot.val().choice;
         $(".results").html("<p> Wins: " + player2Wins + "</p>" + "<p> Losses: " + player2Losses + "</p>" + "<p> Ties: " + player2Ties + "</p>");
-      }
+      };
      });
 
 
@@ -201,6 +225,7 @@ $(document).ready(function() {
       if(player2Choice === "rock" || player2Choice === "scissors" || player2Choice === "paper") {
         RPSLogic();
         clearChoices();
+        
         
       }
       //RPSLogic(); can't put this here since if both are undefined or NaN (not sure) then number of ties increments
@@ -284,6 +309,10 @@ $(document).ready(function() {
       // 2 seconds pause
       $(".selection-made").html("");
       $(".selection-buttons").css("display", "initial");
+      if (playerNumber === "Player 2") {
+          $(".selection-buttons").css("display", "none");
+          $(".selection-made").text("Waiting for Player 1 selection")
+        }
       }, 2000);
       
     };
